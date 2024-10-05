@@ -1,38 +1,50 @@
 class Solution {
     public boolean checkInclusion(String s1, String s2) {
-         HashMap<Character, Integer> map = new HashMap<>();
-         for (int i = 0; i < s1.length(); i++) {
-             map.put(s1.charAt(i), map.getOrDefault(s1.charAt(i), 0) + 1);
-         }
-         HashMap<Character, Integer> copyMap = new HashMap<Character, Integer>();
-         copyMap.putAll(map);
-         int pointer = 0;
-         int counter = 0;
-         while (pointer < s2.length()) {
-             if (copyMap.containsKey(s2.charAt(pointer)) && copyMap.get(s2.charAt(pointer)) != 0) {
-                    copyMap.put(s2.charAt(pointer), copyMap.get(s2.charAt(pointer)) - 1);
-                    counter++;
-                    if (counter == s1.length()) {
-                        return true;
-                    }
-             }
-             else {
-                 counter = 0;
-                 copyMap.clear();
-                 copyMap.putAll(map);
-                 int newPointer = pointer;
-                 while (newPointer >= 0 && copyMap.containsKey(s2.charAt(newPointer)) && copyMap.get(s2.charAt(newPointer)) != 0) {
-                        copyMap.put(s2.charAt(newPointer), copyMap.get(s2.charAt(newPointer))- 1);
-                        counter++;
-                        if (counter == s1.length()) {
-                            return true;
-                        }
-                        newPointer--;
-                 }
+    int n1 = s1.length();
+    int n2 = s2.length();
+   
+    if(n1>n2)
+    return false;
+    if(n1==0)
+    return true;
 
-             }
-             pointer++;
-         }
-         return false;
+    int a[] = new int[26];
+    int b[] = new int[26];
+
+
+    for(int i=0; i<n1; i++)
+    {
+     a[s1.charAt(i)-'a']++;
+     b[s2.charAt(i)-'a']++;   
     }
+    
+    int freq = 0;
+    for(int i=0; i<26; i++)
+    if(a[i]==b[i])
+    freq++;
+
+    for(int i=0; i<n2-n1; i++)
+    {
+      if(freq==26)
+      return true;
+
+      int left = s2.charAt(i)-'a';
+      int right = s2.charAt(i+n1)-'a';
+      b[right]++;
+      if(a[right]==b[right])
+      freq++;
+      else if(a[right]+1==b[right])
+      freq--;
+
+      b[left]--;
+      if(a[left]==b[left])
+      freq++;
+      else if(a[left]-1==b[left])
+      freq--;
+
+    }
+      return freq==26;
+    
+    }
+
 }
